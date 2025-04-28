@@ -322,7 +322,7 @@ class whatsappController extends Controller
       }
       // Buscar o crear usuario
       $chatbotusuario = ChatbotUsuario::updateOrCreate(
-            ['numero_telefono' => $from],
+            ['numero_telefono' => $numero],
             ['ultima_interaccion' => Carbon::createFromTimestamp($timestamp)]
         );
 
