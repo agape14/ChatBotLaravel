@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Response;
 use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
+use App\Models\ChatbotUsuario;
+use App\Models\ChatbotMensaje;
 
 class whatsappController extends Controller
 {
@@ -296,23 +298,8 @@ class whatsappController extends Controller
       $changes = $entry['changes'][0];
       $value = $changes['value'];
       $from = $value['metadata']['display_phone_number'];
+      $tipo_mensaje = $value['messages'][0]['type'];
 
-      if (isset($value['messages'][0]['interactive']['button_reply']['id'])) {
-        $id_boton = $value['messages'][0]['interactive']['button_reply']['id'];
-
-        if($id_boton=='registro'){
-          Log::info('Se presiono el boton Registro');
-        };
-
-        if($id_boton=='ver_balance'){
-          Log::info('Se presiono el boton Ver balance');
-        };
-
-        if($id_boton=='realizar_pago'){
-          Log::info('Se presiono el boton Realizar pago');
-        };
-
-      }
 
 
 
@@ -323,6 +310,34 @@ class whatsappController extends Controller
       $numero = $mensaje['from'];
       $id = $mensaje['id'];
       $timestamp = $mensaje['timestamp'];
+
+
+      $contenido = '';
+      if ($tipo_mensaje == 'text') {
+          $contenido = $value['messages'][0]['text']['body'];
+      } elseif ($tipo_mensaje == 'interactive') {
+          $contenido = $value['messages'][0]['interactive']['button_reply']['id'];
+      } else {
+          $contenido = json_encode($value['messages'][0]);
+      }
+      // Buscar o crear usuario
+      $chatbotusuario = ChatbotUsuario::updateOrCreate(
+            ['numero_telefono' => $from],
+            ['ultima_interaccion' => Carbon::createFromTimestamp($timestamp)]
+        );
+
+        // Guardar mensaje
+        ChatbotMensaje::create([
+            'chatbot_usuario_id' => $chatbotusuario->id,
+            'mensaje_id' => $id  ?? null,
+            'tipo_mensaje' => $tipo_mensaje,
+            'contenido' => $contenido,
+            'fecha_envio' => Carbon::createFromTimestamp($timestamp),
+            'creado_por_chatbot' => false,
+        ]);
+
+        Log::info('Mensaje guardado exitosamente.');
+
 
       $this->enviarRespuesta($comentario, $numero, $id, $timestamp, $from);
 
