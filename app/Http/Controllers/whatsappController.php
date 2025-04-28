@@ -234,9 +234,8 @@ class whatsappController extends Controller
         // Detectar "hola"
         if (Str::contains($comentario, 'hola')) {
             $respuesta = <<<MENU
-            ____________________________________________________________________
             👋 ¡Hola! Soy Emi, el asistente virtual de la Empresa Municipal Inmobiliaria de Lima - EMILIMA.
-            ____________________________________________________________________
+
             Hemos lanzado la convocatoria y estoy aquí para brindarte toda la información que necesites. 📢
 
             1 Ver la lista de inmuebles en subasta 📜🏡
