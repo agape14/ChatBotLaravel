@@ -206,7 +206,7 @@ class whatsappController extends Controller
 
             📌 Para personas naturales:
             • Anexo 03 de las Bases ([Descargar PDF] https://emilima.com.pe/Subastas/anexo_03_bases.pdf )
-            • Declaración Jurada de procedencia lícita de fondos ([Descargar PDF] https://emilima.com.pe/Subastas/declaracion_procedencia_licita_fondos.pdf )
+            • Declaración Jurada de procedencia lícita de fondos ([Descargar PDF] https://emilima.com.pe/Subastas/declaracion_procedencia_licita_fondos_2025.pdf )
             • Copia de DNI.
             • Comprobante de compra de bases emitido por EMILIMA S.A.
             • Recibo de caja por concepto de garantía emitido por EMILIMA S.A.
