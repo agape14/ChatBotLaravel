@@ -187,53 +187,57 @@ class whatsappController extends Controller
             Para participar en la subasta, sigue estos pasos:
 
             1️⃣ Compra tus bases a S/50.00
-
             Presencial: Pago en el Banco de Crédito (Cuenta Corriente N° 193-11271150-99 a nombre de EMILIMA S.A.) y presentación del comprobante en la Subgerencia de Tesorería.
-            Virtual: A través de la página web www.emilima.com.pe.
+            Virtual: A través de la página web www.emilima.com.pe/home.
 
-            2️⃣ Inscripción y depósito de garantía
+            2️⃣ Depósito de garantía
+            • Depósito bancario al N° Cuenta Corriente Soles: 191-4217528-0-91 con N° Código de Cuenta Interbancaria: 00219100421752809158, de EMILIMA - FOMUR, remitido al correo subasta@emilima.com.pe, indicando datos completos y el lote a postular, a fin de verificar y brindarle el recibo.
+            • Cheque de Gerencia No Negociable a nombre de EMILIMA - FOMUR, por el (los) predio(s) a los que postule, presentándolo a la Subgerencia de Tesorería.
 
+            3️⃣ Inscripción
             Presencial: Jr. Cuzco N° 286, Cercado de Lima (mesa de partes).
             Virtual: www.sgd.emilima.com.pe/mesapartesvirtual.html.
 
-            📌 Inscripciones hasta el viernes 23 de mayo. Para más detalles, revisa las bases en: [https://beacons.ai/emilima.sa]
+            📌 Inscripciones hasta el viernes 23 de mayo. Para más detalles, revisa las bases en: https://beacons.ai/emilima.sa
             TXT,
 
-            '3' => <<<TXT
-            📆 Fecha de la subasta: Domingo 25 de mayo 2025
-            📍 Lugar: Museo Metropolitano de Lima (Sala Taulichusco) Av. 28 de julio con Av. Garcilaso de la Vega -Parque de la Exposición, Cercado de Lima
-            ⏰ Hora: 9:00 a.m.
-
-            🔹 Modalidad: Mixta (presencial y virtual para postores fuera de Lima Metropolitana)
-
+          '3' => <<<TXT
             📋 Requisitos para participar:
 
             📌 Para personas naturales:
-            🔹 Copia del DNI.
-            🔹 Declaración jurada de no tener deudas con la Municipalidad de Lima.
-            🔹 Comprobante de pago de bases.
-            🔹 Comprobante de depósito de garantía.
+            • Anexo 03 de las Bases ([Descargar PDF] https://emilima.com.pe/Subastas/anexo_03_bases.pdf )
+            • Declaración Jurada de procedencia lícita de fondos ([Descargar PDF] https://emilima.com.pe/Subastas/declaracion_procedencia_licita_fondos.pdf )
+            • Copia de DNI.
+            • Comprobante de compra de bases emitido por EMILIMA S.A.
+            • Recibo de caja por concepto de garantía emitido por EMILIMA S.A.
 
             📌 Para personas jurídicas:
-            🔹 Copia del RUC y vigencia de poder del representante legal.
-            🔹 Copia del DNI del representante legal.
-            🔹 Declaración jurada de no tener deudas con la Municipalidad de Lima.
-            🔹 Comprobante de pago de bases.
-            🔹 Comprobante de depósito de garantía.
+            • Anexo 03 de las Bases ([Descargar PDF] https://emilima.com.pe/Subastas/anexo_03_bases.pdf )
+            • Declaración Jurada de procedencia lícita de fondos ([Descargar PDF] https://emilima.com.pe/Subastas/declaracion_procedencia_licita_fondos_2025.pdf )
+            • Copia de DNI.
+            • Copia de RUC y Vigencia de poder del representante legal.
+            • Comprobante de compra de bases emitido por EMILIMA S.A.
+            • Recibo de caja por concepto de garantía emitido por EMILIMA S.A.
+
+            📆 Fecha de la subasta: domingo 25 de mayo 2025
+            📍 Lugar: Museo Metropolitano de Lima (Sala Taulichusco), Av. 28 de julio con Av. Garcilaso de la Vega – Parque de la Exposición, Cercado de Lima
+            ⏰ Hora: 9:00 a.m.
+            🔹 Modalidad: Mixta (presencial y virtual para postores fuera de Lima Metropolitana)
             TXT,
 
             '4' => <<<TXT
             📍 Oficina: Jr. Cuzco N° 286, Cercado de Lima
             📲 Celulares: 989-346-982 / 987-658-263
-            🌐 Web: www.emilima.com.pe
+            🌐 Web: www.emilima.com.pe/home
 
-            Nuestro equipo está listo para responder todas tus dudas.
+            📞 Nuestro equipo está listo para responder todas tus dudas en los celulares mencionados.
             TXT,
         ];
 
         // Detectar "hola"
-        if (Str::contains($comentario, 'hola')) {
+        if (Str::contains($comentario, ['hola','Hola','buenos','dias','subasta','informacion','información'])) {
             $respuesta = <<<MENU
+
             👋 ¡Hola! Soy Emi, el asistente virtual de la Empresa Municipal Inmobiliaria de Lima - EMILIMA.
 
             Hemos lanzado la convocatoria y estoy aquí para brindarte toda la información que necesites. 📢
@@ -263,7 +267,7 @@ class whatsappController extends Controller
             🔹 Escribe "salir" para cerrar el chat.
             MENU;
         }// Detectar salida
-        elseif (Str::contains($comentario, 'salir')) {
+        elseif (Str::contains($comentario, ['salir','ADIOS','adios','Adios','Adiós', 'hasta luego','Hasta luego'])) {
             $respuesta = <<<SALIDA
             Gracias por contactarte con EMILIMA. 👋
             Si necesitas más información, no dudes en volver a escribirnos.
@@ -273,7 +277,7 @@ class whatsappController extends Controller
         else {
             $respuesta = <<<NO_OPCION
             Lo siento 😥, no entendí tu mensaje.
-            Por favor, escribe un número del 1 al 4 o escribe "menú" para ver las opciones disponibles.
+            Por favor, escribe "hola" o un número del 1 al 4 o escribe "menú" para ver las opciones disponibles.
             Escribe "salir" para cerrar el chat.
             NO_OPCION;
         }
