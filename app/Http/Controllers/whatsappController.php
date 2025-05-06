@@ -234,52 +234,34 @@ class whatsappController extends Controller
             TXT,
         ];
 
+        $respuestaMenu = <<<MENU
+        👋 ¡Hola! Soy Emi, el asistente virtual de la Empresa Municipal Inmobiliaria de Lima - EMILIMA.
+
+        Hemos lanzado la convocatoria y estoy aquí para brindarte toda la información que necesites. 📢
+
+        1 Ver la lista de inmuebles en subasta 📜🏡
+        2 Cómo participar en la subasta 🏢📈
+        3 Fechas y requisitos para participar 📅✅
+        4 Contacto 📞📩
+
+        🔹 Escribe el número de la opción que deseas.
+        🔹 Escribe "menú" para ver nuevamente las opciones.
+        🔹 Escribe "salir" para cerrar el chat.
+        MENU;
         // Detectar "hola"
-        if (Str::contains($comentario, ['hola','Hola','buenos','dias','subasta','informacion','información'])) {
-            $respuesta = <<<MENU
-
-            👋 ¡Hola! Soy Emi, el asistente virtual de la Empresa Municipal Inmobiliaria de Lima - EMILIMA.
-
-            Hemos lanzado la convocatoria y estoy aquí para brindarte toda la información que necesites. 📢
-
-            1 Ver la lista de inmuebles en subasta 📜🏡
-            2 Cómo participar en la subasta 🏢📈
-            3 Fechas y requisitos para participar 📅✅
-            4 Contacto 📞📩
-
-            🔹 Escribe el número de la opción que deseas.
-            🔹 Escribe "menú" para ver nuevamente las opciones.
-            🔹 Escribe "salir" para cerrar el chat.
-            MENU;
-        }// Detectar opciones 1 al 4
-        elseif (array_key_exists($comentario, $opciones)) {
+        if (array_key_exists($comentario, $opciones)) {
             $respuesta = $opciones[$comentario];
-        }// Detectar menú
-        elseif (Str::contains($comentario, ['menu', 'menú'])) {
-            $respuesta = <<<MENU
-            1 Ver la lista de inmuebles en subasta 📜🏡
-            2 Cómo participar en la subasta 🏢📈
-            3 Fechas y requisitos para participar 📅✅
-            4 Contacto 📞📩
-
-            🔹 Escribe el número de la opción que deseas.
-            🔹 Escribe "menú" para ver nuevamente las opciones.
-            🔹 Escribe "salir" para cerrar el chat.
-            MENU;
-        }// Detectar salida
-        elseif (Str::contains($comentario, ['salir','ADIOS','adios','Adios','Adiós', 'hasta luego','Hasta luego'])) {
+        } elseif (Str::contains($comentario, ['menu', 'menú'])) {
+            $respuesta = $respuestaMenu;
+        } elseif (Str::contains($comentario, ['salir','ADIOS','adios','Adios','Adiós','hasta luego','Hasta luego','Gracias','gracias','GRACIAS'])) {
             $respuesta = <<<SALIDA
-            Gracias por contactarte con EMILIMA. 👋
-            Si necesitas más información, no dudes en volver a escribirnos.
-            ¡Que tengas un excelente día! ☀️
-            SALIDA;
-        }// Opción no válida
-        else {
-            $respuesta = <<<NO_OPCION
-            Lo siento 😥, no entendí tu mensaje.
-            Por favor, escribe "hola" o un número del 1 al 4 o escribe "menú" para ver las opciones disponibles.
-            Escribe "salir" para cerrar el chat.
-            NO_OPCION;
+        Gracias por contactarte con EMILIMA. 👋
+        Si necesitas más información, no dudes en volver a escribirnos.
+        ¡Que tengas un excelente día! ☀️
+        SALIDA;
+        } else {
+            // Cualquier otra cosa muestra el menú
+            $respuesta = $respuestaMenu;
         }
 
         // Enviar mensaje
