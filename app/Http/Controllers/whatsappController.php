@@ -12,6 +12,10 @@ use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 use App\Models\WhatsappInteraction;
 use App\Jobs\SendInactivityMessage;
 
+use App\Models\ChatbotUsuario;
+use App\Models\ChatbotMensaje;
+use Carbon\Carbon;
+
 class whatsappController extends Controller
 {
 
@@ -374,12 +378,11 @@ class whatsappController extends Controller
         }
         else {
             $respuesta = <<<NO_OPCION
-            Lo siento 😥, no entendí tu mensaje.
-            Por favor, escribe "hola" o un número del 1 al 4 o escribe "menú" para ver las opciones disponibles.
-            Escribe "salir" para cerrar el chat.
+            Gracias por comunicarte con la Empresa Inmobiliaria de Lima - EMILIMA 🔝🏙️ Soy Emi y espero haber resuelto tus consultas 👍🏼
+            Si necesitas algo más, no dudes en contactarme 👋🏼😉 ¡Que tengas un excelente día!
             NO_OPCION;
         }
-
+/** Lo siento 😥, no entendí tu mensaje.   Por favor, escribe "hola" o un número del 1 al 4 o escribe "menú" para ver las opciones disponibles.            Escribe "salir" para cerrar el chat. */
         // Enviar mensaje
         $response = Http::withOptions($this->ws_responder_texto($numero, $respuesta))
             ->post($endpoint);
@@ -427,6 +430,35 @@ class whatsappController extends Controller
       $numero = $mensaje['from'];
       $id = $mensaje['id'];
       $timestamp = $mensaje['timestamp'];
+
+
+
+
+      $contenido = '';
+      if ($tipo_mensaje == 'text') {
+          $contenido = $value['messages'][0]['text']['body'];
+      } elseif ($tipo_mensaje == 'interactive') {
+          $contenido = $value['messages'][0]['interactive']['button_reply']['id'];
+      } else {
+          $contenido = json_encode($value['messages'][0]);
+      }
+      // Buscar o crear usuario
+      $chatbotusuario = ChatbotUsuario::updateOrCreate(
+            ['numero_telefono' => $numero],
+            ['ultima_interaccion' => Carbon::createFromTimestamp($timestamp)]
+        );
+
+        // Guardar mensaje
+        ChatbotMensaje::create([
+            'chatbot_usuario_id' => $chatbotusuario->id,
+            'mensaje_id' => $id  ?? null,
+            'tipo_mensaje' => $tipo_mensaje,
+            'contenido' => $contenido,
+            'fecha_envio' => Carbon::createFromTimestamp($timestamp),
+            'creado_por_chatbot' => false,
+        ]);
+
+        Log::info('Mensaje guardado exitosamente.');
 
       $this->enviarRespuesta($comentario, $numero, $id, $timestamp, $from);
 
