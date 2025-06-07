@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Response;
 use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
+use App\Models\WhatsappInteraction;
 
 class whatsappController extends Controller
 {
@@ -173,11 +174,22 @@ class whatsappController extends Controller
     {
         $endpoint = $this->ws_endpoint;
         $comentario = Str::lower(trim($comentario));
+        // Registrar/actualizar la interacción
+        $interaction = WhatsappInteraction::updateOrCreate(
+            ['phone_number' => $numero],
+            ['last_interaction' => now(), 'auto_message_sent' => false]
+        );
+
+        // Programar job para verificar inactividad
+        SendInactivityMessage::dispatch($numero)
+        ->delay(now()->addMinutes(5));
 
         $opciones = [
             '1' => <<<TXT
-            📌 Tenemos 8 terrenos disponibles en seis distritos de Lima Metropolitana.
-            Cada uno cuenta con distintas características y precios base. Puedes revisar el listado completo y detalles en este enlace: 🔗 [https://emilima.com.pe/Subastas/catalogo_subasta_2025.pdf]
+            📌 Tenemos 7 terrenos disponibles en 5 distritos de Lima Metropolitana.
+            Cada uno cuenta con distintas oportunidades de inversión gracias a su excelente ubicación.
+
+            Revisa el listado completo y todos los detalles, como dimensiones, precio base, partida registral, entre otros en este enlace: 🔗[https://emilima.com.pe/Subastas/CATALOGO_SUBASTA_2025_segunda_convocatoria.pdf]
             TXT,
 
             '2' => <<<TXT
@@ -195,7 +207,7 @@ class whatsappController extends Controller
             Presencial: Jr. Cuzco N° 286, Cercado de Lima (mesa de partes).
             Virtual: www.sgd.emilima.com.pe/mesapartesvirtual.html.
 
-            📌 Inscripciones hasta el viernes 23 de mayo. Para más detalles, revisa: https://beacons.ai/emilima.sa
+            📌 Inscripciones hasta el viernes 20 de junio. Para más detalles, revisa: https://beacons.ai/emilima.sa
             TXT,
 
           '3' => <<<TXT
@@ -216,34 +228,33 @@ class whatsappController extends Controller
             * Comprobante de compra de bases emitido por EMILIMA S.A.
             * Recibo de caja por concepto de garantía emitido por EMILIMA S.A.
 
-            📆 Fecha de la subasta: domingo 25 de mayo 2025
+            📆 Fecha de la subasta: domingo 23 de junio 2025
             📍 Lugar: Museo Metropolitano de Lima (Sala Taulichusco), Av. 28 de julio con Av. Garcilaso de la Vega – Parque de la Exposición, Cercado de Lima
-            ⏰ Hora: 9:00 a.m.
+            ⏰ Hora: 11:00 a.m.
             🔹 Modalidad: Mixta (presencial y virtual para postores fuera de Lima Metropolitana)
             TXT,
 
             '4' => <<<TXT
-            Actualmente, EMILIMA ha puesto a disposición 13 espacios comerciales para arrendamiento público en las siguientes zonas:
+            Actualmente, EMILIMA ha puesto a disposición 7 espacios comerciales para arrendamiento público en las siguientes zonas:
 
             📍 Parque de la Exposición
-            Módulos de venta, cafetería y baños
-            Áreas desde 6.25 m² hasta 213.42 m²
-            Renta base mensual desde S/ 1,336.00 hasta S/ 13,810.00
-            Para usos como: venta de alimentos, servicios higiénicos y módulos de kiosco
+            Módulos comerciales, módulos de SS.HH. y patio de comidas
+            Áreas desde 38.36 m² hasta 213.42 m²
+            Renta base mensual desde S/ 3,278.70 hasta los S/12,429.00
 
             📍 Cercado de Lima
-            Servicios higiénicos, oficina y locales comerciales
-            Áreas desde 20.00 m² hasta 102.59 m²
-            Renta base mensual desde S/ 452.60 hasta S/ 9,746.00
+            Contamos con un módulo de SS.HH.
+            Área: 25.57 m²
+            Renta base mensual: S/ 452.60
 
             🔗 Puedes ver el listado completo y detallado en el siguiente enlace:
-            👉 [https://emilima.com.pe/Subastas/LISTA-DE-ESPACIOS-Y-O-INMUEBLES.png]
+            👉 [https://emilima.com.pe/Subastas/catalogo_arrendamiento_segunda_convocatoria_2025.pdf]
             TXT,
             '5' => <<<TXT
             Para participar en la subasta, sigue estos pasos:
 
-            1️⃣ Compra tus bases – S/ 50.00
-            🛒 Disponibles del 09 al 23 de mayo de 2025
+            1️⃣ Compra tus bases a S/ 50.00
+            🛒 Disponibles del 09 al 20 de junio de 2025
 
             Presencial: Pago en el Banco de Crédito (Cuenta Corriente N° 193-11271150-99 o CCI:00219300112711509914 a nombre de EMILIMA S.A.) y presentación del comprobante en la Subgerencia de Tesorería.
             Virtual: A través de la página web www.emilima.com.pe/home.
@@ -265,11 +276,10 @@ class whatsappController extends Controller
 
             📍 Entrega presencial del cheque en:
             Jr. Cuzco N° 286, Cercado de Lima – Subgerencia de Tesorería y Recaudación
-            🕐 Horario: 8:30 a.m. a 1:00 p.m. y 2:00 p.m. a 4:30 p.m.
-            📅 Hasta el viernes 23 de mayo de 2025
+            🕐 Horario: 8:30 a.m. a 1:00 p.m. y 2:00 p.m. a 5:00 p.m.
+            📅 Hasta el viernes 20 de junio de 2025
 
             📌 Tras revisión del cheque, se te entregará el recibo de caja, único documento que te acredita como postor hábil.
-
             TXT,
             '6' => <<<TXT
             📋 Requisitos para participar:
@@ -292,39 +302,36 @@ class whatsappController extends Controller
             Recibo de caja por concepto de garantía emitido por EMILIMA S.A.
 
             📆 Fecha del acto de subasta:
-            Domingo 25 de mayo de 2025
+            Domingo 23 de junio de 2025
             📍 Lugar: Museo Metropolitano de Lima – Sala Taulichusco (Av. 28 de julio con Av. Garcilaso de la Vega – Parque de la Exposición, Cercado de Lima)
-            ⏰ Hora: 11:30 a.m. (máxima tolerancia: 10 minutos)
+            ⏰ Hora: 3:00 p.m. (máxima tolerancia: 10 minutos)
             🔹 Modalidad: Presencial
-
             TXT,
             '7' => <<<TXT
             📍 Oficina: Jr. Cuzco N° 286, Cercado de Lima
             📲 Celulares: 989-346-982 / 987-658-263
             🌐 Web: www.emilima.com.pe/home
 
-            📞 Nuestro equipo está listo para responder todas tus dudas en los celulares mencionados.
-
+            📞 Nuestro equipo está listo para responder todas tus consultas en nuestros canales oficiales.
             TXT,
         ];
 
         // Detectar "hola"
         if (Str::contains($comentario, ['hola','Hola','buenos','dias','subasta','informacion','información'])) {
             $respuesta = <<<MENU
-
             👋 ¡Hola! Soy Emi, el asistente virtual de la Empresa Municipal Inmobiliaria de Lima - EMILIMA.
 
             Hemos lanzado la convocatoria para nuestras subastas públicas y estoy aquí para brindarte toda la información que necesites. 📢
 
             SUBASTA DE TERRENOS:
-            1️⃣ Ver la lista de inmuebles en subasta 📜🏡
-            2️⃣ Cómo participar en la subasta de inmuebles 🏢📈
-            3️⃣ Fechas y requisitos para participar en la subasta de inmuebles 📅✅
+            1️⃣ Ver la lista de terrenos en subasta 📜🏡
+            2️⃣ ¿Cómo participar en la subasta de terrenos? 🏢📈
+            3️⃣ Fechas y requisitos para participar en la subasta de terrenos 📅✅
 
             SUBASTA DE ARRENDAMIENTO DE ESPACIOS COMERCIALES:
-            4️⃣ Ver los espacios comerciales disponibles en arrendamiento 🛍️📌
-            5️⃣ Cómo participar en la subasta de arrendamiento 💼📊
-            6️⃣ Fechas y requisitos para arrendamiento comercial 🗓️📋
+            4️⃣ Ver los espacios comerciales disponibles para arrendamiento 🛍️📌
+            5️⃣ ¿Cómo participar en la subasta de arrendamiento? 💼📊
+            6️⃣ Fechas y requisitos para participar en la subasta de arrendamiento 🗓️📋
 
             OTROS:
             7️⃣ Contacto 📞📩
@@ -340,14 +347,14 @@ class whatsappController extends Controller
         elseif (Str::contains($comentario, ['menu', 'menú'])) {
             $respuesta = <<<MENU
             SUBASTA DE TERRENOS:
-            1️⃣ Ver la lista de inmuebles en subasta 📜🏡
-            2️⃣ Cómo participar en la subasta de inmuebles 🏢📈
-            3️⃣ Fechas y requisitos para participar en la subasta de inmuebles 📅✅
+            1️⃣ Ver la lista de terrenos en subasta 📜🏡
+            2️⃣ ¿Cómo participar en la subasta de terrenos? 🏢📈
+            3️⃣ Fechas y requisitos para participar en la subasta de terrenos 📅✅
 
             SUBASTA DE ARRENDAMIENTO DE ESPACIOS COMERCIALES:
-            4️⃣ Ver los espacios comerciales disponibles en arrendamiento 🛍️📌
-            5️⃣ Cómo participar en la subasta de arrendamiento 💼📊
-            6️⃣ Fechas y requisitos para arrendamiento comercial 🗓️📋
+            4️⃣ Ver los espacios comerciales disponibles para arrendamiento 🛍️📌
+            5️⃣ ¿Cómo participar en la subasta de arrendamiento? 💼📊
+            6️⃣ Fechas y requisitos para participar en la subasta de arrendamiento 🗓️📋
 
             OTROS:
             7️⃣ Contacto 📞📩
@@ -363,7 +370,7 @@ class whatsappController extends Controller
             Si necesitas más información, no dudes en volver a escribirnos.
             ¡Que tengas un excelente día! ☀️
             SALIDA;
-        }// Opción no válida
+        }
         else {
             $respuesta = <<<NO_OPCION
             Lo siento 😥, no entendí tu mensaje.
@@ -479,5 +486,35 @@ class whatsappController extends Controller
         ]);
     }
 
+    // Nuevo método para verificar interacciones inactivas
+    public function checkInactiveInteractions()
+    {
+        $inactiveInteractions = WhatsappInteraction::where('last_interaction', '<', now()->subMinutes(5))
+            ->where('auto_message_sent', false)
+            ->get();
+
+        foreach ($inactiveInteractions as $interaction) {
+            $this->sendAutoMessage($interaction->phone_number);
+            $interaction->update(['auto_message_sent' => true]);
+        }
+    }
+
+    // Nuevo método para enviar mensaje automático
+    private function sendAutoMessage($numero)
+    {
+        $respuesta = <<<CINCOMINSININTERACCION
+        Gracias por comunicarte con la Empresa Inmobiliaria de Lima - EMILIMA 🔝🏙️ Soy Emi y espero haber resuelto tus consultas 👍🏼
+        Si necesitas algo más, no dudes en contactarme 👋🏼😉 ¡Que tengas un excelente día!
+        CINCOMINSININTERACCION;
+
+        $response = Http::withOptions($this->ws_responder_texto($numero, $respuesta))
+            ->post($this->ws_endpoint);
+
+        if ($response->failed()) {
+            Log::error("Error al enviar mensaje automático a $numero: " . $response->body());
+        } else {
+            Log::info("Mensaje automático enviado correctamente a $numero");
+        }
+    }
 
 }
