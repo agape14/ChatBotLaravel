@@ -431,17 +431,6 @@ class whatsappController extends Controller
       $id = $mensaje['id'];
       $timestamp = $mensaje['timestamp'];
 
-
-
-
-      $contenido = '';
-      if ($tipo_mensaje == 'text') {
-          $contenido = $value['messages'][0]['text']['body'];
-      } elseif ($tipo_mensaje == 'interactive') {
-          $contenido = $value['messages'][0]['interactive']['button_reply']['id'];
-      } else {
-          $contenido = json_encode($value['messages'][0]);
-      }
       // Buscar o crear usuario
       $chatbotusuario = ChatbotUsuario::updateOrCreate(
             ['numero_telefono' => $numero],
@@ -452,8 +441,8 @@ class whatsappController extends Controller
         ChatbotMensaje::create([
             'chatbot_usuario_id' => $chatbotusuario->id,
             'mensaje_id' => $id  ?? null,
-            'tipo_mensaje' => $tipo_mensaje,
-            'contenido' => $contenido,
+            'tipo_mensaje' => 'text',
+            'contenido' => $comentario ,
             'fecha_envio' => Carbon::createFromTimestamp($timestamp),
             'creado_por_chatbot' => false,
         ]);
