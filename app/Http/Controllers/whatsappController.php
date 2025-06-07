@@ -233,7 +233,7 @@ class whatsappController extends Controller
             * Comprobante de compra de bases emitido por EMILIMA S.A.
             * Recibo de caja por concepto de garantía emitido por EMILIMA S.A.
 
-            📆 Fecha de la subasta: domingo 23 de junio 2025
+            📆 Fecha de la subasta: Lunes 23 de junio 2025
             📍 Lugar: Museo Metropolitano de Lima (Sala Taulichusco), Av. 28 de julio con Av. Garcilaso de la Vega – Parque de la Exposición, Cercado de Lima
             ⏰ Hora: 11:00 a.m.
             🔹 Modalidad: Mixta (presencial y virtual para postores fuera de Lima Metropolitana)
@@ -307,7 +307,7 @@ class whatsappController extends Controller
             Recibo de caja por concepto de garantía emitido por EMILIMA S.A.
 
             📆 Fecha del acto de subasta:
-            Domingo 23 de junio de 2025
+            Lunes 23 de junio de 2025
             📍 Lugar: Museo Metropolitano de Lima – Sala Taulichusco (Av. 28 de julio con Av. Garcilaso de la Vega – Parque de la Exposición, Cercado de Lima)
             ⏰ Hora: 3:00 p.m. (máxima tolerancia: 10 minutos)
             🔹 Modalidad: Presencial
