@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Response;
 use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 use App\Models\WhatsappInteraction;
+use App\Jobs\SendInactivityMessage;
 
 class whatsappController extends Controller
 {
