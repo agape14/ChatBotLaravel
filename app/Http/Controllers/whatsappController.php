@@ -210,7 +210,7 @@ class whatsappController extends Controller
 
             3️⃣ Inscripción
             Presencial: Jr. Cuzco N° 286, Cercado de Lima (mesa de partes).
-            Virtual: www.sgd.emilima.com.pe/mesapartesvirtual.html.
+            Virtual: https://sgd.emilima.com.pe/mesapartesvirtual.html.
 
             📌 Inscripciones hasta el viernes 20 de junio. Para más detalles, revisa: https://beacons.ai/emilima.sa
             TXT,
